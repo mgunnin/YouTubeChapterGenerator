@@ -29,6 +29,6 @@ for video in videos:
         block = ' '.join(text)
         title = clean_title(video['title']['runs'][0]['text'])
         print(title)
-        save_file('transcripts/%s.txt' % title, block)
+        save_file(f'transcripts/{title}.txt', block)
     except Exception as oops:
         print(video['title'], oops)
