@@ -35,13 +35,13 @@ def gpt3_completion(prompt, engine='text-davinci-002', temp=0.7, top_p=1.0, toke
                 stop=stop)
             text = response['choices'][0]['text'].strip()
             #text = re.sub('\s+', ' ', text)
-            filename = '%s_gpt3.txt' % time()
-            save_file('gpt3_logs/%s' % filename, prompt + '\n\n==========\n\n' + text)
+            filename = f'{time()}_gpt3.txt'
+            save_file(f'gpt3_logs/{filename}', prompt + '\n\n==========\n\n' + text)
             return text
         except Exception as oops:
             retry += 1
             if retry >= max_retry:
-                return "GPT3 error: %s" % oops
+                return f"GPT3 error: {oops}"
             print('Error communicating with OpenAI:', oops)
             sleep(1)
 
@@ -49,16 +49,16 @@ def gpt3_completion(prompt, engine='text-davinci-002', temp=0.7, top_p=1.0, toke
 if __name__ == '__main__':
     files = os.listdir('transcripts/')
     for file in files:
-        if os.path.exists('clarified/%s' % file):
+        if os.path.exists(f'clarified/{file}'):
             print('Skipping:', file)
             continue
-        transcript = open_file('transcripts/%s' % file)
+        transcript = open_file(f'transcripts/{file}')
         chunks = textwrap.wrap(transcript, 6000)
-        output = list()
+        output = []
         for chunk in chunks:
             prompt = open_file('prompt_clarify_transcript.txt').replace('<<TRANSCRIPT>>', chunk)
             essay = gpt3_completion(prompt)
             output.append(essay)
         result = '\n\n'.join(output)
-        save_file('clarified/%s' % file, result)
+        save_file(f'clarified/{file}', result)
         print('\n\n================================================\n\n', result)

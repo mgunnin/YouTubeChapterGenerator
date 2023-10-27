@@ -35,13 +35,13 @@ def gpt3_completion(prompt, engine='text-davinci-003', temp=0.0, top_p=1.0, toke
                 stop=stop)
             text = response['choices'][0]['text'].strip()
             text = re.sub('\s+', ' ', text)
-            filename = '%s_gpt3.txt' % time()
-            save_file('gpt3_logs/%s' % filename, prompt + '\n\n==========\n\n' + text)
+            filename = f'{time()}_gpt3.txt'
+            save_file(f'gpt3_logs/{filename}', prompt + '\n\n==========\n\n' + text)
             return text
         except Exception as oops:
             retry += 1
             if retry >= max_retry:
-                return "GPT3 error: %s" % oops
+                return f"GPT3 error: {oops}"
             print('Error communicating with OpenAI:', oops)
             sleep(1)
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     transcript = open_file('captions.sbv').split('\n\n')
     chunk_size = 20
     chunks = [transcript[i:i + chunk_size] for i in range(0, len(transcript), chunk_size)]
-    results = list()
+    results = []
     for chunk in chunks:
         chunk = '\n'.join(chunk)
         #print('\n\n',chunk)
